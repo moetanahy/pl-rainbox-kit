@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Table,
   Thead,
@@ -10,34 +10,39 @@ import {
   Box,
   Text,
   Flex,
+  Spinner,
 } from '@chakra-ui/react'
-
-interface LiquidityPool {
-  tokenName: string
-  isoCode: string
-  myLiquidity: string
-  tvl: string
-  totalApr: string
-}
-
-const liquidityPools: LiquidityPool[] = [
-  {
-    tokenName: 'USDz',
-    isoCode: 'USD',
-    myLiquidity: '0',
-    tvl: '$1,000,000',
-    totalApr: '5.2%',
-  },
-  {
-    tokenName: 'EGPz',
-    isoCode: 'EGP',
-    myLiquidity: '0',
-    tvl: '$500,000',
-    totalApr: '7.5%',
-  },
-]
+import { StakeUtils, Currency } from '../utils/StakeUtils'
+import { ethers } from 'ethers'
 
 const LiquidityPoolsList: React.FC = () => {
+  const [liquidityPools, setLiquidityPools] = useState<Currency[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchLiquidityPools = async () => {
+      try {
+        const stakeUtils = new StakeUtils()
+        const pools = await stakeUtils.getSupportedTokens()
+        setLiquidityPools(pools)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching liquidity pools:', error)
+        setLoading(false)
+      }
+    }
+
+    fetchLiquidityPools()
+  }, [])
+
+  if (loading) {
+    return (
+      <Flex justifyContent="center" alignItems="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    )
+  }
+
   return (
     <Box overflowX="auto" width="100%">
       <Table variant="simple">
@@ -45,22 +50,24 @@ const LiquidityPoolsList: React.FC = () => {
           <Tr>
             <Th>Token Name</Th>
             <Th>ISO Code</Th>
-            <Th>My Liquidity</Th>
-            <Th>TVL</Th>
-            <Th>Total APR</Th>
+            <Th>Total Staked</Th>
+            <Th>Transaction Fee</Th>
+            <Th>Rewards Pool</Th>
+            <Th>Fee Tier</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
           {liquidityPools.map((pool) => (
-            <Tr key={pool.tokenName}>
+            <Tr key={pool.tokenSymbol}>
               <Td>
-                <Text fontWeight="bold">{pool.tokenName}</Text>
+                <Text fontWeight="bold">{pool.tokenSymbol}</Text>
               </Td>
               <Td>{pool.isoCode}</Td>
-              <Td>{pool.myLiquidity}</Td>
-              <Td>{pool.tvl}</Td>
-              <Td>{pool.totalApr}</Td>
+              <Td>{ethers.formatEther(pool.totalStaked)} {pool.tokenSymbol}</Td>
+              <Td>{pool.transactionFee}%</Td>
+              <Td>{ethers.formatEther(pool.rewardsPool)} {pool.tokenSymbol}</Td>
+              <Td>{pool.feeTier}</Td>
               <Td>
                 <Flex justifyContent="flex-end">
                   <Button

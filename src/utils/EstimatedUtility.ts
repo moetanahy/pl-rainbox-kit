@@ -22,7 +22,7 @@ export class EstimatedUtility {
     this.provider = new ethers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org');
     
     // Contract address
-    const contractAddress = '0x4CC329Fe26540fec97006Cdd54A85d9940491F9E';
+    const contractAddress = '0x7B08Bc47BE19d5F09a2CB3f4A41e55dA095f91F1';
     
     // Updated ABI with the correct function signature
     const abi = [

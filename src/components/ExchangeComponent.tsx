@@ -110,7 +110,14 @@ const ExchangeComponent = () => {
               />
             </HStack>
 
-            <Button colorScheme="blue" onClick={handleConvert}>Convert</Button>
+            <Button 
+              onClick={handleConvert} 
+              bg="#15263e" 
+              color="white" 
+              _hover={{ bg: "#1e3a5c" }}
+            >
+              Convert
+            </Button>
 
             <Divider />
 

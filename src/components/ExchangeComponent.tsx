@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Select,
@@ -27,6 +27,8 @@ const ExchangeComponent = () => {
   const [transferFee, setTransferFee] = useState(0);
   const [liquidityFee, setLiquidityFee] = useState(0);
   const [estimatedReceived, setEstimatedReceived] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const estimatedUtility = new EstimatedUtility();
 
@@ -49,12 +51,6 @@ const ExchangeComponent = () => {
       maximumFractionDigits: 2,
     }).format(value);
   };
-
-  useEffect(() => {
-    if (amount && fromCurrency && toCurrency) {
-      handleConvert();
-    }
-  }, [fromCurrency, toCurrency, amount]);
 
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -81,18 +77,34 @@ const ExchangeComponent = () => {
     }
   };
 
-  const handleConvert = () => {
+  const handleConvert = useCallback(async () => {
     const amountNumber = parseFloat(amount);
     if (isNaN(amountNumber)) return;
 
-    const result = estimatedUtility.estimateExchange(amountNumber, fromCurrency, toCurrency);
-    
-    setRate(result.exchangeRate);
-    setConvertedAmount(formatAmount(result.estimatedReceiveAmount, toCurrency));
-    setTransferFee(result.transactionFee);
-    setLiquidityFee(result.liquidityFee);
-    setEstimatedReceived(result.estimatedReceiveAmount);
-  };
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await estimatedUtility.estimateExchange(amountNumber, fromCurrency, toCurrency);
+      
+      setRate(result.exchangeRate);
+      setConvertedAmount(formatAmount(result.estimatedReceiveAmount, toCurrency));
+      setTransferFee(result.transactionFee);
+      setLiquidityFee(result.liquidityFee);
+      setEstimatedReceived(result.estimatedReceiveAmount);
+    } catch (error) {
+      console.error('Error during conversion:', error);
+      setError('An error occurred during conversion. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [amount, fromCurrency, toCurrency]);
+
+  useEffect(() => {
+    if (amount && fromCurrency && toCurrency) {
+      handleConvert();
+    }
+  }, [amount, fromCurrency, toCurrency, handleConvert]);
 
   return (
     <Card boxShadow="md" borderRadius="lg" bg="white">
@@ -199,19 +211,13 @@ const ExchangeComponent = () => {
               </HStack>
             </VStack>
 
-            <Button 
-              onClick={handleConvert} 
-              bg="#15263e" 
-              color="white" 
-              _hover={{ bg: "#1e3a5c" }}
-            >
-              Convert
-            </Button>
+            {isLoading && <Text>Loading...</Text>}
+            {error && <Text color="red.500">{error}</Text>}
 
             <Divider />
 
             <Text textAlign="center" color="gray.800">
-              Exchange Rate: 1 {fromCurrency} = {rate.toFixed(4)} {toCurrency}
+              Exchange Rate: 1 {fromCurrency} = {rate ? rate.toFixed(4) : '...'} {toCurrency}
             </Text>
           </VStack>
         </Box>

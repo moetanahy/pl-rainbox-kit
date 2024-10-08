@@ -34,15 +34,20 @@ const ExchangeComponent = () => {
     switch (currency) {
       case SupportedCurrencies.USD:
         return '$';
-      case SupportedCurrencies.EUR:
-        return '€';
-      case SupportedCurrencies.GBP:
-        return '£';
       case SupportedCurrencies.EGP:
         return 'E£';
       default:
         return '';
     }
+  };
+
+  const formatAmount = (value: number, currency: SupportedCurrencies): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
   };
 
   useEffect(() => {
@@ -83,7 +88,7 @@ const ExchangeComponent = () => {
     const result = estimatedUtility.estimateExchange(amountNumber, fromCurrency, toCurrency);
     
     setRate(result.exchangeRate);
-    setConvertedAmount(result.estimatedReceiveAmount.toFixed(2));
+    setConvertedAmount(formatAmount(result.estimatedReceiveAmount, toCurrency));
     setTransferFee(result.transactionFee);
     setLiquidityFee(result.liquidityFee);
     setEstimatedReceived(result.estimatedReceiveAmount);
@@ -102,7 +107,7 @@ const ExchangeComponent = () => {
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
-                width="90px"  // Increased from 80px to 90px
+                width="90px"
               >
                 {Object.values(SupportedCurrencies).map((currency) => (
                   <option key={currency} value={currency}>{currency}</option>
@@ -150,7 +155,7 @@ const ExchangeComponent = () => {
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
-                width="90px"  // Increased from 80px to 90px
+                width="90px"
               >
                 {Object.values(SupportedCurrencies)
                   .filter(currency => currency !== fromCurrency)
@@ -182,15 +187,15 @@ const ExchangeComponent = () => {
             <VStack align="stretch" spacing={2} mt={2}>
               <HStack justify="space-between">
                 <Text fontSize="sm" color="gray.600">Transfer Fee:</Text>
-                <Text fontSize="sm" color="gray.800">{transferFee.toFixed(2)} {toCurrency}</Text>
+                <Text fontSize="sm" color="gray.800">{formatAmount(transferFee, toCurrency)}</Text>
               </HStack>
               <HStack justify="space-between">
                 <Text fontSize="sm" color="gray.600">Liquidity Fee:</Text>
-                <Text fontSize="sm" color="gray.800">{liquidityFee.toFixed(2)} {toCurrency}</Text>
+                <Text fontSize="sm" color="gray.800">{formatAmount(liquidityFee, toCurrency)}</Text>
               </HStack>
               <HStack justify="space-between">
                 <Text fontSize="sm" fontWeight="bold" color="gray.700">Estimated Received:</Text>
-                <Text fontSize="sm" fontWeight="bold" color="gray.800">{estimatedReceived.toFixed(2)} {toCurrency}</Text>
+                <Text fontSize="sm" fontWeight="bold" color="gray.800">{formatAmount(estimatedReceived, toCurrency)}</Text>
               </HStack>
             </VStack>
 

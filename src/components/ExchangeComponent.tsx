@@ -30,6 +30,7 @@ const ExchangeComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [amountBeforeFees, setAmountBeforeFees] = useState(0);
+  const [finalRate, setFinalRate] = useState(0);
 
   const estimatedUtility = new EstimatedUtility();
 
@@ -88,6 +89,7 @@ const ExchangeComponent = () => {
     setLiquidityFee(0);
     setEstimatedReceived(0);
     setAmountBeforeFees(0);
+    setFinalRate(0);
   };
 
   const handleConvert = useCallback(async () => {
@@ -110,6 +112,8 @@ const ExchangeComponent = () => {
       setEstimatedReceived(result.estimatedReceiveAmount);
       // Calculate and set the amount before fees
       setAmountBeforeFees(amountNumber * result.exchangeRate);
+      // Calculate and set the final rate
+      setFinalRate(Number((result.estimatedReceiveAmount / amountNumber).toFixed(4)));
     } catch (error) {
       console.error('Error during conversion:', error);
       setError('An error occurred during conversion. Please try again.');
@@ -243,6 +247,9 @@ const ExchangeComponent = () => {
 
             <Text textAlign="center" color="gray.800">
               Exchange Rate: 1 {fromCurrency} = {rate ? rate.toFixed(4) : '...'} {toCurrency}
+            </Text>
+            <Text textAlign="center" fontSize="sm" color="gray.600">
+              Final Rate: 1 {fromCurrency} = {finalRate ? finalRate.toFixed(4) : '...'} {toCurrency}
             </Text>
           </VStack>
         </Box>

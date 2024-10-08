@@ -1,7 +1,14 @@
 import { Box, Flex, Spacer, Image, Container } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useRouter } from 'next/router';
 
 export default function Header() {
+  const router = useRouter();
+
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <Box 
       as="header" 
@@ -18,7 +25,29 @@ export default function Header() {
           py="1.5rem"
         >
           <Flex align="center" mr={5}>
-            <Image src="/dazu-logo.png" alt="DAZU Logo" width="150px" height="auto" />
+            <Box as="a" cursor="pointer" onClick={() => handleNavigation('/')}>
+              <Image src="/dazu-logo.png" alt="DAZU Logo" width="150px" height="auto" />
+            </Box>
+          </Flex>
+          <Flex align="center" mr={10} ml={40} gap={20}>
+              <Box 
+                as="span" 
+                cursor="pointer"
+                color={router.pathname === '/send' ? 'purple.500' : 'inherit'}
+                onClick={() => handleNavigation('/send')}
+                fontSize="1.1rem"
+              >
+                Send
+              </Box>
+              <Box 
+                as="span" 
+                cursor="pointer"
+                color={router.pathname === '/stake' ? 'purple.500' : 'inherit'}
+                onClick={() => handleNavigation('/stake')}
+                fontSize="1.1rem"
+              >
+                Stake
+              </Box>
           </Flex>
           <Spacer />
           <Box>

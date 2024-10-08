@@ -35,7 +35,7 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
-// Modify the theme to use light mode by default
+// Modify the theme to use light mode by default and set the background color
 const theme = extendTheme({
   config: {
     initialColorMode: 'light',
@@ -44,7 +44,7 @@ const theme = extendTheme({
   styles: {
     global: {
       body: {
-        bg: '#f7fafc',  // Updated to a lighter blue color
+        bg: '#f7fafc',  // Light blue background color
         color: 'gray.800',
       },
     },

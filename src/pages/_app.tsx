@@ -8,8 +8,10 @@ import { RainbowKitProvider, getDefaultConfig, Chain } from '@rainbow-me/rainbow
 
 // Import ChakraProvider and other necessary Chakra UI components
 import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
+import { ColorModeScript } from '@chakra-ui/react'
 
-import Header from '../components/Header.tsx'
+// Import Header component
+import Header from '../components/Header'
 
 const xrpl_evm_sidechain_devnet = {
   id: 1440002,
@@ -33,14 +35,26 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
-// Optionally, you can create a custom theme
+// Modify the theme to use light mode by default
 const theme = extendTheme({
-  // Add your custom theme configurations here
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
+  styles: {
+    global: {
+      body: {
+        bg: '#f7fafc',  // Updated to a lighter blue color
+        color: 'gray.800',
+      },
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <CSSReset />
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>

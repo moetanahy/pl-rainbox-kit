@@ -1,14 +1,26 @@
-import { Box, Flex, Spacer } from '@chakra-ui/react'
+import { Box, Flex, Spacer, Image } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 export default function Header() {
   return (
-    <Box bg="gray.100" py={4}>
-      <Flex maxW="container.xl" mx="auto" px={4} alignItems="center">
-        <Box fontWeight="bold" fontSize="xl">My App</Box>
-        <Spacer />
-        <ConnectButton />
+    <Flex 
+      as="header" 
+      align="center" 
+      justify="space-between" 
+      wrap="wrap" 
+      padding="1.5rem" 
+      bg="white" 
+      borderBottom="1px solid" 
+      borderColor="gray.400" // Adjust this color to match the DAZU logo color
+      boxShadow="sm"
+    >
+      <Flex align="center" mr={5}>
+        <Image src="/dazu-logo.png" alt="DAZU Logo" width="150px" height="auto" />
       </Flex>
-    </Box>
+      <Spacer />
+      <Box>
+        <ConnectButton />
+      </Box>
+    </Flex>
   )
 }

@@ -18,6 +18,7 @@ import { ethers } from 'ethers'
 const LiquidityPoolsList: React.FC = () => {
   const [liquidityPools, setLiquidityPools] = useState<Currency[]>([])
   const [loading, setLoading] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Add this line to track login state
 
   useEffect(() => {
     const fetchLiquidityPools = async () => {
@@ -50,10 +51,11 @@ const LiquidityPoolsList: React.FC = () => {
           <Tr>
             <Th>Token Name</Th>
             <Th>ISO Code</Th>
-            <Th>Total Staked</Th>
+            <Th>Your Liquidity</Th>
+            <Th>TVL (Total Value Locked)</Th>
             <Th>Transaction Fee</Th>
-            <Th>Rewards Pool</Th>
             <Th>Fee Tier</Th>
+            <Th>Rewards Pool</Th>
             <Th></Th>
           </Tr>
         </Thead>
@@ -64,10 +66,11 @@ const LiquidityPoolsList: React.FC = () => {
                 <Text fontWeight="bold">{pool.tokenSymbol}</Text>
               </Td>
               <Td>{pool.isoCode}</Td>
+              <Td>{isLoggedIn ? '0.00' : '-'}</Td>
               <Td>{ethers.formatEther(pool.totalStaked)} {pool.tokenSymbol}</Td>
               <Td>{pool.transactionFee}%</Td>
-              <Td>{ethers.formatEther(pool.rewardsPool)} {pool.tokenSymbol}</Td>
               <Td>{pool.feeTier}</Td>
+              <Td>{ethers.formatEther(pool.rewardsPool)} {pool.tokenSymbol}</Td>
               <Td>
                 <Flex justifyContent="flex-end">
                   <Button

@@ -22,20 +22,19 @@ export class EstimatedUtility {
     this.provider = new ethers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org');
     
     // Contract address
-    const contractAddress = '0xa64Cb032fdf586E396AC3FbC7d7828DdeF2554bf';
+    const contractAddress = '0xD635EEDD373B4d777aB12DA96A3748fe39612D1C';
     
-    // ABI (Application Binary Interface) - You'll need to provide the ABI for your contract
+    // Updated ABI with the correct function signature
     const abi = [
-      // Add the ABI for the getExchangeRate function here
-      "function getExchangeRate(string memory fromCurrency, string memory toCurrency) public view returns (uint256)"
+      "function getExchangeRate(string memory fromCurrency, string memory toCurrency) public view returns (uint256)",
+      "function calculateLiquidityProviderFeePublic(uint256 amount, string memory toCurrencyISO) public view returns (uint256)"
     ];
 
     // Initialize contract
     this.contract = new ethers.Contract(contractAddress, abi, this.provider);
   }
 
-  // Mock fee percentages (replace with real calculations in production)
-  private liquidityFeePercentage = 0.003; // 0.3%
+  // Mock transaction fee percentage (replace with real calculations in production)
   private transactionFeePercentage = 0.001; // 0.1%
 
   public async estimateExchange(
@@ -48,13 +47,22 @@ export class EstimatedUtility {
       const exchangeRateBN = await this.contract.getExchangeRate(sendCurrency, receiveCurrency);
       console.log("Exchange rate BN")
       console.log(exchangeRateBN)
-      const exchangeRate = parseFloat(ethers.formatUnits(exchangeRateBN, 4)); // Assuming 4 decimals
+      const exchangeRate = parseFloat(ethers.formatUnits(exchangeRateBN, 2)); // Assuming 4 decimals
       console.log("exchangeRate")
       console.log(exchangeRate)
 
       const convertedAmount = sendAmount * exchangeRate;
+      console.log(convertedAmount)
 
-      const liquidityFee = convertedAmount * this.liquidityFeePercentage;
+      // Calculate liquidity fee using the updated smart contract function
+      const liquidityFeeBN = await this.contract.calculateLiquidityProviderFeePublic(
+        ethers.parseUnits(convertedAmount.toString(), 2),
+        receiveCurrency
+      );
+      console.log("liquidityFeeBN")
+      console.log(liquidityFeeBN)
+      const liquidityFee = parseFloat(ethers.formatUnits(liquidityFeeBN, 2));
+
       const transactionFee = convertedAmount * this.transactionFeePercentage;
 
       const estimatedReceiveAmount = convertedAmount - liquidityFee - transactionFee;

@@ -12,6 +12,8 @@ import {
   Card,
   CardBody,
   Icon,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import { EstimatedUtility, SupportedCurrencies } from '../utils/EstimatedUtility';
@@ -27,6 +29,21 @@ const ExchangeComponent = () => {
   const [estimatedReceived, setEstimatedReceived] = useState(0);
 
   const estimatedUtility = new EstimatedUtility();
+
+  const getCurrencySymbol = (currency: SupportedCurrencies): string => {
+    switch (currency) {
+      case SupportedCurrencies.USD:
+        return '$';
+      case SupportedCurrencies.EUR:
+        return '€';
+      case SupportedCurrencies.GBP:
+        return '£';
+      case SupportedCurrencies.EGP:
+        return 'E£';
+      default:
+        return '';
+    }
+  };
 
   useEffect(() => {
     if (amount && fromCurrency && toCurrency) {
@@ -85,21 +102,31 @@ const ExchangeComponent = () => {
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
+                width="90px"  // Increased from 80px to 90px
               >
                 {Object.values(SupportedCurrencies).map((currency) => (
                   <option key={currency} value={currency}>{currency}</option>
                 ))}
               </Select>
-              <Input
-                placeholder="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                type="number"
-                color="gray.800"
-                borderColor="gray.300"
-                _hover={{ borderColor: "gray.400" }}
-                _placeholder={{ color: "gray.500" }}
-              />
+              <InputGroup flex={1}>
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="gray.500"
+                  fontSize="1.2em"
+                  children={getCurrencySymbol(fromCurrency)}
+                />
+                <Input
+                  placeholder="Amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  type="number"
+                  color="gray.800"
+                  borderColor="gray.300"
+                  _hover={{ borderColor: "gray.400" }}
+                  _placeholder={{ color: "gray.500" }}
+                  pl="2rem"
+                />
+              </InputGroup>
             </HStack>
 
             <Button 
@@ -123,6 +150,7 @@ const ExchangeComponent = () => {
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
+                width="90px"  // Increased from 80px to 90px
               >
                 {Object.values(SupportedCurrencies)
                   .filter(currency => currency !== fromCurrency)
@@ -131,15 +159,24 @@ const ExchangeComponent = () => {
                   ))
                 }
               </Select>
-              <Input 
-                value={convertedAmount} 
-                isReadOnly 
-                placeholder="Converted amount" 
-                color="gray.800"
-                borderColor="gray.300"
-                _hover={{ borderColor: "gray.400" }}
-                _placeholder={{ color: "gray.500" }}
-              />
+              <InputGroup flex={1}>
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="gray.500"
+                  fontSize="1.2em"
+                  children={getCurrencySymbol(toCurrency)}
+                />
+                <Input 
+                  value={convertedAmount} 
+                  isReadOnly 
+                  placeholder="Converted amount" 
+                  color="gray.800"
+                  borderColor="gray.300"
+                  _hover={{ borderColor: "gray.400" }}
+                  _placeholder={{ color: "gray.500" }}
+                  pl="2rem"
+                />
+              </InputGroup>
             </HStack>
 
             <VStack align="stretch" spacing={2} mt={2}>

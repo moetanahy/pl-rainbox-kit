@@ -1,13 +1,21 @@
-import { Box, Heading } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react'
 import Header from '../components/Header'
+import LiquidityPoolsList from '../components/LiquidityPoolsList'
 
 export default function StakePage() {
   return (
-    <>
-      <Box p={4}>
-        <Heading>Stake money and make incredible returns</Heading>
-        {/* Add your stake page content here */}
-      </Box>
-    </>
+    <Box minHeight="calc(100vh - 80px)">
+      <Container maxW="container.xl" px={[4, 6, 8]}>
+        <VStack align="start" spacing={6} py={8}>
+          <Heading fontSize={["2xl", "3xl", "4xl"]} fontWeight="bold" lineHeight="shorter">
+            Stake and Earn Rewards
+          </Heading>
+          <Text fontSize={["md", "lg"]} color="gray.700">
+            Provide liquidity to our pools and earn attractive APRs
+          </Text>
+          <LiquidityPoolsList />
+        </VStack>
+      </Container>
+    </Box>
   )
 }

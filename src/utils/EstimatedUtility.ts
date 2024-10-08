@@ -22,7 +22,7 @@ export class EstimatedUtility {
     this.provider = new ethers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org');
     
     // Contract address
-    const contractAddress = '0xD635EEDD373B4d777aB12DA96A3748fe39612D1C';
+    const contractAddress = '0x4CC329Fe26540fec97006Cdd54A85d9940491F9E';
     
     // Updated ABI with the correct function signature
     const abi = [
@@ -52,7 +52,12 @@ export class EstimatedUtility {
       console.log(exchangeRate)
 
       const convertedAmount = sendAmount * exchangeRate;
+      console.log("convertedAmount")
       console.log(convertedAmount)
+
+      const parsedUnits = convertedAmount * 100
+      console.log("parsedUnits")
+      console.log(parsedUnits)
 
       // Calculate liquidity fee using the updated smart contract function
       const liquidityFeeBN = await this.contract.calculateLiquidityProviderFeePublic(
@@ -61,7 +66,7 @@ export class EstimatedUtility {
       );
       console.log("liquidityFeeBN")
       console.log(liquidityFeeBN)
-      const liquidityFee = parseFloat(ethers.formatUnits(liquidityFeeBN, 2));
+      const liquidityFee = parseFloat(ethers.formatUnits(liquidityFeeBN, 2)) / 100;
 
       const transactionFee = convertedAmount * this.transactionFeePercentage;
 

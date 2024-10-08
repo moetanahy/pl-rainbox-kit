@@ -56,7 +56,8 @@ const ExchangeComponent = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
     setAmount(convertedAmount);
-    setConvertedAmount(amount);
+    setConvertedAmount('');
+    resetValues();
   };
 
   const handleFromCurrencyChange = (newCurrency: SupportedCurrencies) => {
@@ -66,6 +67,7 @@ const ExchangeComponent = () => {
       const newToCurrency = Object.values(SupportedCurrencies).find(currency => currency !== newCurrency);
       if (newToCurrency) setToCurrency(newToCurrency);
     }
+    resetValues();
   };
 
   const handleToCurrencyChange = (newCurrency: SupportedCurrencies) => {
@@ -75,11 +77,23 @@ const ExchangeComponent = () => {
       const newFromCurrency = Object.values(SupportedCurrencies).find(currency => currency !== newCurrency);
       if (newFromCurrency) setFromCurrency(newFromCurrency);
     }
+    resetValues();
+  };
+
+  const resetValues = () => {
+    setConvertedAmount('');
+    setRate(0);
+    setTransferFee(0);
+    setLiquidityFee(0);
+    setEstimatedReceived(0);
   };
 
   const handleConvert = useCallback(async () => {
     const amountNumber = parseFloat(amount);
-    if (isNaN(amountNumber)) return;
+    if (isNaN(amountNumber) || amountNumber <= 0) {
+      resetValues();
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -95,6 +109,7 @@ const ExchangeComponent = () => {
     } catch (error) {
       console.error('Error during conversion:', error);
       setError('An error occurred during conversion. Please try again.');
+      resetValues();
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +118,8 @@ const ExchangeComponent = () => {
   useEffect(() => {
     if (amount && fromCurrency && toCurrency) {
       handleConvert();
+    } else {
+      resetValues();
     }
   }, [amount, fromCurrency, toCurrency, handleConvert]);
 

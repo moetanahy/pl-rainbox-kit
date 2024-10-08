@@ -55,13 +55,14 @@ export class EstimatedUtility {
       console.log("convertedAmount")
       console.log(convertedAmount)
 
-      const parsedUnits = convertedAmount * 100
+      const parsedUnits = Math.trunc(convertedAmount * 100)
       console.log("parsedUnits")
       console.log(parsedUnits)
 
       // Calculate liquidity fee using the updated smart contract function
       const liquidityFeeBN = await this.contract.calculateLiquidityProviderFeePublic(
-        ethers.parseUnits(convertedAmount.toString(), 2),
+        // ethers.parseUnits(convertedAmount.toString(), 2),
+        parsedUnits,
         receiveCurrency
       );
       console.log("liquidityFeeBN")

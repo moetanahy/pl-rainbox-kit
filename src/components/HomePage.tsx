@@ -3,7 +3,7 @@ import ExchangeComponent from './ExchangeComponent'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const TypingAnimation = ({ text, color }) => {
+const TypingAnimation: React.FC<{ text: string; color: string }> = ({ text, color }) => {
   const [displayText, setDisplayText] = useState('')
   const [index, setIndex] = useState(0)
 

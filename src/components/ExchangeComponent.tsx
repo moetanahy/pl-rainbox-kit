@@ -14,10 +14,11 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FaExchangeAlt } from 'react-icons/fa';
+import { EstimatedUtility, SupportedCurrencies } from '../utils/EstimatedUtility';
 
 const ExchangeComponent = () => {
-  const [fromCurrency, setFromCurrency] = useState('USD');
-  const [toCurrency, setToCurrency] = useState('EGP');
+  const [fromCurrency, setFromCurrency] = useState<SupportedCurrencies>(SupportedCurrencies.USD);
+  const [toCurrency, setToCurrency] = useState<SupportedCurrencies>(SupportedCurrencies.EGP);
   const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState('');
   const [rate, setRate] = useState(0);
@@ -25,15 +26,13 @@ const ExchangeComponent = () => {
   const [liquidityFee, setLiquidityFee] = useState(0);
   const [estimatedReceived, setEstimatedReceived] = useState(0);
 
-  // Dummy exchange rates (replace with real API call in production)
-  const rates = {
-    USD: { EGP: 30.90 },
-    EGP: { USD: 1 / 30.90 },
-  };
+  const estimatedUtility = new EstimatedUtility();
 
   useEffect(() => {
-    setRate(rates[fromCurrency][toCurrency]);
-  }, [fromCurrency, toCurrency]);
+    if (amount && fromCurrency && toCurrency) {
+      handleConvert();
+    }
+  }, [fromCurrency, toCurrency, amount]);
 
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -42,18 +41,35 @@ const ExchangeComponent = () => {
     setConvertedAmount(amount);
   };
 
+  const handleFromCurrencyChange = (newCurrency: SupportedCurrencies) => {
+    setFromCurrency(newCurrency);
+    if (newCurrency === toCurrency) {
+      // Set toCurrency to the first available currency that's not the same as fromCurrency
+      const newToCurrency = Object.values(SupportedCurrencies).find(currency => currency !== newCurrency);
+      if (newToCurrency) setToCurrency(newToCurrency);
+    }
+  };
+
+  const handleToCurrencyChange = (newCurrency: SupportedCurrencies) => {
+    setToCurrency(newCurrency);
+    if (newCurrency === fromCurrency) {
+      // Set fromCurrency to the first available currency that's not the same as toCurrency
+      const newFromCurrency = Object.values(SupportedCurrencies).find(currency => currency !== newCurrency);
+      if (newFromCurrency) setFromCurrency(newFromCurrency);
+    }
+  };
+
   const handleConvert = () => {
-    const converted = parseFloat(amount) * rate;
-    setConvertedAmount(converted.toFixed(2));
+    const amountNumber = parseFloat(amount);
+    if (isNaN(amountNumber)) return;
+
+    const result = estimatedUtility.estimateExchange(amountNumber, fromCurrency, toCurrency);
     
-    // Calculate fees and estimated received amount
-    const transfer = converted * 0.01; // 1% transfer fee
-    const liquidity = converted * 0.005; // 0.5% liquidity fee
-    const estimated = converted - transfer - liquidity;
-    
-    setTransferFee(transfer.toFixed(2));
-    setLiquidityFee(liquidity.toFixed(2));
-    setEstimatedReceived(estimated.toFixed(2));
+    setRate(result.exchangeRate);
+    setConvertedAmount(result.estimatedReceiveAmount.toFixed(2));
+    setTransferFee(result.transactionFee);
+    setLiquidityFee(result.liquidityFee);
+    setEstimatedReceived(result.estimatedReceiveAmount);
   };
 
   return (
@@ -65,13 +81,14 @@ const ExchangeComponent = () => {
             <HStack>
               <Select 
                 value={fromCurrency} 
-                onChange={(e) => setFromCurrency(e.target.value)} 
+                onChange={(e) => handleFromCurrencyChange(e.target.value as SupportedCurrencies)} 
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
               >
-                <option value="USD">USD</option>
-                <option value="EGP">EGP</option>
+                {Object.values(SupportedCurrencies).map((currency) => (
+                  <option key={currency} value={currency}>{currency}</option>
+                ))}
               </Select>
               <Input
                 placeholder="Amount"
@@ -102,13 +119,17 @@ const ExchangeComponent = () => {
             <HStack>
               <Select 
                 value={toCurrency} 
-                onChange={(e) => setToCurrency(e.target.value)} 
+                onChange={(e) => handleToCurrencyChange(e.target.value as SupportedCurrencies)} 
                 color="gray.800"
                 borderColor="gray.300"
                 _hover={{ borderColor: "gray.400" }}
               >
-                <option value="USD">USD</option>
-                <option value="EGP">EGP</option>
+                {Object.values(SupportedCurrencies)
+                  .filter(currency => currency !== fromCurrency)
+                  .map((currency) => (
+                    <option key={currency} value={currency}>{currency}</option>
+                  ))
+                }
               </Select>
               <Input 
                 value={convertedAmount} 
@@ -124,15 +145,15 @@ const ExchangeComponent = () => {
             <VStack align="stretch" spacing={2} mt={2}>
               <HStack justify="space-between">
                 <Text fontSize="sm" color="gray.600">Transfer Fee:</Text>
-                <Text fontSize="sm" color="gray.800">{transferFee} {toCurrency}</Text>
+                <Text fontSize="sm" color="gray.800">{transferFee.toFixed(2)} {toCurrency}</Text>
               </HStack>
               <HStack justify="space-between">
                 <Text fontSize="sm" color="gray.600">Liquidity Fee:</Text>
-                <Text fontSize="sm" color="gray.800">{liquidityFee} {toCurrency}</Text>
+                <Text fontSize="sm" color="gray.800">{liquidityFee.toFixed(2)} {toCurrency}</Text>
               </HStack>
               <HStack justify="space-between">
                 <Text fontSize="sm" fontWeight="bold" color="gray.700">Estimated Received:</Text>
-                <Text fontSize="sm" fontWeight="bold" color="gray.800">{estimatedReceived} {toCurrency}</Text>
+                <Text fontSize="sm" fontWeight="bold" color="gray.800">{estimatedReceived.toFixed(2)} {toCurrency}</Text>
               </HStack>
             </VStack>
 

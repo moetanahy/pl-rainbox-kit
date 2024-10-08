@@ -1,5 +1,11 @@
 import { ethers } from 'ethers';
 
+// Add the SupportedCurrencies enum
+export enum SupportedCurrencies {
+  EGP = 'EGP',
+  USD = 'USD'
+}
+
 interface ExchangeResult {
   exchangeRate: number;
   liquidityFee: number;
@@ -8,13 +14,10 @@ interface ExchangeResult {
 }
 
 export class EstimatedUtility {
-  // Mock exchange rates (replace with real data source in production)
-  private exchangeRates: { [key: string]: number } = {
-    USD: 1,
-    EUR: 0.92,
-    GBP: 0.79,
-    JPY: 151.67,
-    // Add more currencies as needed
+  // Update exchange rates to include only EGP and USD
+  private exchangeRates: { [key in SupportedCurrencies]: number } = {
+    [SupportedCurrencies.USD]: 1,
+    [SupportedCurrencies.EGP]: 30.90, // Example rate, update as needed
   };
 
   // Mock fee percentages (replace with real calculations in production)
@@ -23,8 +26,8 @@ export class EstimatedUtility {
 
   public estimateExchange(
     sendAmount: number,
-    sendCurrency: string,
-    receiveCurrency: string
+    sendCurrency: SupportedCurrencies,
+    receiveCurrency: SupportedCurrencies
   ): ExchangeResult {
     const sendRate = this.exchangeRates[sendCurrency] || 1;
     const receiveRate = this.exchangeRates[receiveCurrency] || 1;
@@ -45,7 +48,7 @@ export class EstimatedUtility {
     };
   }
 
-  public formatCurrency(amount: number, currency: string): string {
+  public formatCurrency(amount: number, currency: SupportedCurrencies): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,

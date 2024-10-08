@@ -21,6 +21,9 @@ const ExchangeComponent = () => {
   const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState('');
   const [rate, setRate] = useState(0);
+  const [transferFee, setTransferFee] = useState(0);
+  const [liquidityFee, setLiquidityFee] = useState(0);
+  const [estimatedReceived, setEstimatedReceived] = useState(0);
 
   // Dummy exchange rates (replace with real API call in production)
   const rates = {
@@ -42,15 +45,23 @@ const ExchangeComponent = () => {
   const handleConvert = () => {
     const converted = parseFloat(amount) * rate;
     setConvertedAmount(converted.toFixed(2));
+    
+    // Calculate fees and estimated received amount
+    const transfer = converted * 0.01; // 1% transfer fee
+    const liquidity = converted * 0.005; // 0.5% liquidity fee
+    const estimated = converted - transfer - liquidity;
+    
+    setTransferFee(transfer.toFixed(2));
+    setLiquidityFee(liquidity.toFixed(2));
+    setEstimatedReceived(estimated.toFixed(2));
   };
 
   return (
     <Card boxShadow="md" borderRadius="lg" bg="white">
       <CardBody>
         <Box maxWidth="400px" margin="auto" mt={8} p={6} borderWidth={1} borderRadius="lg">
-          <VStack spacing={4} align="stretch">
-            <Heading size="md" textAlign="center" color="gray.800">Check the transfer rates</Heading>
-            
+          <VStack spacing={6} align="stretch">
+            <Heading size="lg" textAlign="center" color="gray.800" mb={2}>Send Money</Heading>
             <HStack>
               <Select 
                 value={fromCurrency} 
@@ -109,6 +120,21 @@ const ExchangeComponent = () => {
                 _placeholder={{ color: "gray.500" }}
               />
             </HStack>
+
+            <VStack align="stretch" spacing={2} mt={2}>
+              <HStack justify="space-between">
+                <Text fontSize="sm" color="gray.600">Transfer Fee:</Text>
+                <Text fontSize="sm" color="gray.800">{transferFee} {toCurrency}</Text>
+              </HStack>
+              <HStack justify="space-between">
+                <Text fontSize="sm" color="gray.600">Liquidity Fee:</Text>
+                <Text fontSize="sm" color="gray.800">{liquidityFee} {toCurrency}</Text>
+              </HStack>
+              <HStack justify="space-between">
+                <Text fontSize="sm" fontWeight="bold" color="gray.700">Estimated Received:</Text>
+                <Text fontSize="sm" fontWeight="bold" color="gray.800">{estimatedReceived} {toCurrency}</Text>
+              </HStack>
+            </VStack>
 
             <Button 
               onClick={handleConvert} 

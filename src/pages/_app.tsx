@@ -4,8 +4,12 @@ import type { AppProps } from 'next/app';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, getDefaultConfig,Chain, } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultConfig, Chain } from '@rainbow-me/rainbowkit';
 
+// Import ChakraProvider and other necessary Chakra UI components
+import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
+
+import Header from '../components/Header.tsx'
 
 const xrpl_evm_sidechain_devnet = {
   id: 1440002,
@@ -21,7 +25,6 @@ const xrpl_evm_sidechain_devnet = {
   }
 } as const satisfies Chain;
 
-
 const config = getDefaultConfig({
   appName: 'My RainbowKit App',
   projectId: 'YOUR_PROJECT_ID',
@@ -30,15 +33,24 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
+// Optionally, you can create a custom theme
+const theme = extendTheme({
+  // Add your custom theme configurations here
+});
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <Component {...pageProps} />
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <ChakraProvider theme={theme}>
+      <CSSReset />
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider>
+            <Header />
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ChakraProvider>
   );
 }
 

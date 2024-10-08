@@ -9,7 +9,11 @@ import {
   HStack,
   Heading,
   Divider,
+  Card,
+  CardBody,
+  Icon,
 } from '@chakra-ui/react';
+import { FaExchangeAlt } from 'react-icons/fa';
 
 const ExchangeComponent = () => {
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -41,42 +45,82 @@ const ExchangeComponent = () => {
   };
 
   return (
-    <Box maxWidth="400px" margin="auto" mt={8} p={6} borderWidth={1} borderRadius="lg">
-      <VStack spacing={4} align="stretch">
-        <Heading size="md" textAlign="center">Currency Exchange</Heading>
-        
-        <HStack>
-          <Select value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)}>
-            <option value="USD">USD</option>
-            <option value="EGP">EGP</option>
-          </Select>
-          <Input
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            type="number"
-          />
-        </HStack>
+    <Card boxShadow="md" borderRadius="lg" bg="white">
+      <CardBody>
+        <Box maxWidth="400px" margin="auto" mt={8} p={6} borderWidth={1} borderRadius="lg">
+          <VStack spacing={4} align="stretch">
+            <Heading size="md" textAlign="center" color="gray.800">Check the transfer rates</Heading>
+            
+            <HStack>
+              <Select 
+                value={fromCurrency} 
+                onChange={(e) => setFromCurrency(e.target.value)} 
+                color="gray.800"
+                borderColor="gray.300"
+                _hover={{ borderColor: "gray.400" }}
+              >
+                <option value="USD">USD</option>
+                <option value="EGP">EGP</option>
+              </Select>
+              <Input
+                placeholder="Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                type="number"
+                color="gray.800"
+                borderColor="gray.300"
+                _hover={{ borderColor: "gray.400" }}
+                _placeholder={{ color: "gray.500" }}
+              />
+            </HStack>
 
-        <Button onClick={handleSwap}>↑↓</Button>
+            <Button 
+              onClick={handleSwap} 
+              aria-label="Swap currencies"
+              bg="gray.100"
+              _hover={{ bg: "gray.200" }}
+              border="1px solid"
+              borderColor="gray.300"
+              boxShadow="sm"
+              p={2}
+              borderRadius="md"
+            >
+              <Icon as={FaExchangeAlt} color="blue.500" boxSize={5} />
+            </Button>
 
-        <HStack>
-          <Select value={toCurrency} onChange={(e) => setToCurrency(e.target.value)}>
-            <option value="USD">USD</option>
-            <option value="EGP">EGP</option>
-          </Select>
-          <Input value={convertedAmount} isReadOnly placeholder="Converted amount" />
-        </HStack>
+            <HStack>
+              <Select 
+                value={toCurrency} 
+                onChange={(e) => setToCurrency(e.target.value)} 
+                color="gray.800"
+                borderColor="gray.300"
+                _hover={{ borderColor: "gray.400" }}
+              >
+                <option value="USD">USD</option>
+                <option value="EGP">EGP</option>
+              </Select>
+              <Input 
+                value={convertedAmount} 
+                isReadOnly 
+                placeholder="Converted amount" 
+                color="gray.800"
+                borderColor="gray.300"
+                _hover={{ borderColor: "gray.400" }}
+                _placeholder={{ color: "gray.500" }}
+              />
+            </HStack>
 
-        <Button colorScheme="blue" onClick={handleConvert}>Convert</Button>
+            <Button colorScheme="blue" onClick={handleConvert}>Convert</Button>
 
-        <Divider />
+            <Divider />
 
-        <Text textAlign="center">
-          Exchange Rate: 1 {fromCurrency} = {rate.toFixed(4)} {toCurrency}
-        </Text>
-      </VStack>
-    </Box>
+            <Text textAlign="center" color="gray.800">
+              Exchange Rate: 1 {fromCurrency} = {rate.toFixed(4)} {toCurrency}
+            </Text>
+          </VStack>
+        </Box>
+      </CardBody>
+    </Card>
   );
 };
 

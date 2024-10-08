@@ -29,6 +29,7 @@ const ExchangeComponent = () => {
   const [estimatedReceived, setEstimatedReceived] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [amountBeforeFees, setAmountBeforeFees] = useState(0);
 
   const estimatedUtility = new EstimatedUtility();
 
@@ -86,6 +87,7 @@ const ExchangeComponent = () => {
     setTransferFee(0);
     setLiquidityFee(0);
     setEstimatedReceived(0);
+    setAmountBeforeFees(0);
   };
 
   const handleConvert = useCallback(async () => {
@@ -106,6 +108,8 @@ const ExchangeComponent = () => {
       setTransferFee(result.transactionFee);
       setLiquidityFee(result.liquidityFee);
       setEstimatedReceived(result.estimatedReceiveAmount);
+      // Calculate and set the amount before fees
+      setAmountBeforeFees(amountNumber * result.exchangeRate);
     } catch (error) {
       console.error('Error during conversion:', error);
       setError('An error occurred during conversion. Please try again.');
@@ -214,6 +218,10 @@ const ExchangeComponent = () => {
             </HStack>
 
             <VStack align="stretch" spacing={2} mt={2}>
+              <HStack justify="space-between">
+                <Text fontSize="sm" color="gray.600">Amount before fees:</Text>
+                <Text fontSize="sm" color="gray.800">{formatAmount(amountBeforeFees, toCurrency)}</Text>
+              </HStack>
               <HStack justify="space-between">
                 <Text fontSize="sm" color="gray.600">Transfer Fee:</Text>
                 <Text fontSize="sm" color="gray.800">{formatAmount(transferFee, toCurrency)}</Text>

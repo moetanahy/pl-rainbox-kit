@@ -8,6 +8,6 @@ const walletAddresses = {
   PL_EG_LP: '0xCa37fe99BdB92520159c25AAA6a65E43Abb202aF'
 };
 
-function isAllowedToSeed(address: string): boolean {
+export function isAllowedToSeed(address: string): boolean {
   return address.toLowerCase() === walletAddresses.PL_DAZU_Treasury.toLowerCase();
 }

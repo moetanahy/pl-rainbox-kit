@@ -1,6 +1,7 @@
 import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react'
 import Header from '../components/Header'
 import LiquidityPoolsList from '../components/LiquidityPoolsList'
+import SeederButton from '../components/SeederButton'; // Changed to default import
 
 export default function StakePage() {
   return (
@@ -10,6 +11,8 @@ export default function StakePage() {
           <Heading fontSize={["2xl", "3xl", "4xl"]} fontWeight="bold" lineHeight="shorter">
             Stake and Earn Rewards
           </Heading>
+          {/* <SeederButton connectedAddress={connectedAddress} /> */}
+
           <Text fontSize={["md", "lg"]} color="gray.700">
             Provide liquidity to our pools and earn attractive APRs
           </Text>

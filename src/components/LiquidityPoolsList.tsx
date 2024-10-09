@@ -11,14 +11,17 @@ import {
   Text,
   Flex,
   Spinner,
+  Heading,
 } from '@chakra-ui/react'
 import { StakeUtils, Currency } from '../utils/StakeUtils'
 import { ethers } from 'ethers'
+import SeederButton from './SeederButton'
 
 const LiquidityPoolsList: React.FC = () => {
   const [liquidityPools, setLiquidityPools] = useState<Currency[]>([])
   const [loading, setLoading] = useState(true)
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // Add this line to track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+//   const [connectedAddress, setConnectedAddress] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchLiquidityPools = async () => {
@@ -34,6 +37,16 @@ const LiquidityPoolsList: React.FC = () => {
     }
 
     fetchLiquidityPools()
+
+    // Simulating wallet connection (replace with actual wallet connection logic)
+    const simulateWalletConnection = async () => {
+      // Replace this with actual wallet connection logic
+      const address = '0x28E1CbD9d3a90Dc11492a93ceb87F5bE3DD4FE6a' // PL_DAZU_Treasury address for testing
+    //   setConnectedAddress(address)
+      setIsLoggedIn(true)
+    }
+
+    simulateWalletConnection()
   }, [])
 
   if (loading) {
@@ -46,6 +59,11 @@ const LiquidityPoolsList: React.FC = () => {
 
   return (
     <Box overflowX="auto" width="100%">
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        {/* <SeederButton connectedAddress={connectedAddress} /> */}
+        {/* <Heading as="h2" size="lg">Stake and earn rewards</Heading> */}
+        
+      </Flex>
       <Table variant="simple">
         <Thead>
           <Tr>

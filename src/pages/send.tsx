@@ -1,14 +1,21 @@
-import { Box, Heading } from '@chakra-ui/react'
-import Header from '../components/Header'
+import React from 'react';
+import { Container, Heading, VStack } from '@chakra-ui/react';
+import SendComponent from '../components/SendComponent';
+import ClientOnly from '../components/ClientOnly';
 
-export default function SendPage() {
+const SendPage = () => {
   return (
-    <>
+    <Container maxW="container.xl" py={10}>
+      <VStack spacing={8} align="stretch">
+        <Heading as="h1" size="xl" textAlign="center">
+          Send Funds
+        </Heading>
+        <ClientOnly>
+          <SendComponent />
+        </ClientOnly>
+      </VStack>
+    </Container>
+  );
+};
 
-      <Box p={4}>
-        <Heading>Send Money</Heading>
-        {/* Add your send page content here */}
-      </Box>
-    </>
-  )
-}
+export default SendPage;

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers';
 
-const walletAddresses = {
+export const walletAddresses = {
   PL_DAZU_Treasury: '0x28E1CbD9d3a90Dc11492a93ceb87F5bE3DD4FE6a',
   PL_USA_User: '0xA2e8AD3B06196346674C58cc566F41D3483E9999',
   PL_USA_LP: '0xCe4e69DAeD97b7980Dd851F9b85359ab002583B9',

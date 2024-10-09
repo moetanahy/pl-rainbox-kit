@@ -110,3 +110,13 @@ export async function seedWallets(signer: ethers.Signer): Promise<void> {
     throw error;
   }
 }
+
+export function getWalletTitle(address: string): string {
+  const lowerCaseAddress = address.toLowerCase();
+  for (const [title, walletAddress] of Object.entries(walletAddresses)) {
+    if (walletAddress.toLowerCase() === lowerCaseAddress) {
+      return title;
+    }
+  }
+  return 'Unknown Wallet';
+}

@@ -1,6 +1,7 @@
-import { Box, Flex, Spacer, Image, Container } from '@chakra-ui/react'
+import { Box, Flex, Spacer, Image, Container, VStack, Text, HStack } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useRouter } from 'next/router';
+import { getWalletTitle } from '../utils/WalletUtils'; // Add this import
 
 export default function Header() {
   const router = useRouter();
@@ -92,7 +93,7 @@ export default function Header() {
                       }
 
                       return (
-                        <div style={{ display: 'flex', gap: 12 }}>
+                        <Flex direction="column" align="flex-end">
                           <button
                             onClick={openChainModal}
                             style={{ display: 'flex', alignItems: 'center' }}
@@ -121,13 +122,18 @@ export default function Header() {
                             {chain.name}
                           </button>
 
-                          <button onClick={openAccountModal} type="button">
-                            {account.displayName}
-                            {account.displayBalance
-                              ? ` (${account.displayBalance})`
-                              : ''}
-                          </button>
-                        </div>
+                          <HStack spacing={2} align="center">
+                            <button onClick={openAccountModal} type="button">
+                              {account.displayName}
+                              {account.displayBalance
+                                ? ` (${account.displayBalance})`
+                                : ''}
+                            </button>
+                            <Text fontSize="xs" color="gray.500">
+                              ({getWalletTitle(account.address)})
+                            </Text>
+                          </HStack>
+                        </Flex>
                       )
                     })()}
                   </Box>

@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 export interface Currency {
   isoCode: string;
   tokenSymbol: string;
-  tokenAddress: string; // Add this line
+  tokenAddress: string;
   totalStaked: ethers.BigNumberish;
   transactionFee: number;
   rewardsPool: ethers.BigNumberish;
@@ -19,11 +19,11 @@ export class StakeUtils {
     this.provider = new ethers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org');
     
     // Contract address
-    const contractAddress = '0x3De83c228003EEe62F6fD0ea621Acef9c5f6ea96';
+    const contractAddress = '0x1C22A7a205A2377211158111656fc6E3ffe0A612';
     
     // Updated ABI with the correct function signature
     const abi = [
-      "function getSupportedTokens() external view returns (tuple(string isoCode, string tokenSymbol, uint256 totalStaked, uint256 transactionFee, uint256 rewardsPool, uint8 feeTier)[])"
+      "function getSupportedTokens() external view returns (tuple(string isoCode, string tokenSymbol, address tokenAddress, uint256 totalStaked, uint256 transactionFee, uint256 rewardsPool, uint8 feeTier)[])"
     ];
 
     // Initialize contract
@@ -34,17 +34,20 @@ export class StakeUtils {
     try {
       const supportedTokens = await this.contract.getSupportedTokens();
 
-      console.log("supportedTokens", supportedTokens)
+    //   console.log("Raw supportedTokens data:", JSON.stringify(supportedTokens, null, 2));
 
-      return supportedTokens.map((token: any) => ({
-        isoCode: token.isoCode,
-        tokenSymbol: token.tokenSymbol,
-        tokenAddress: token.tokenAddress,
-        totalStaked: token.totalStaked,
-        transactionFee: token.transactionFee,
-        rewardsPool: token.rewardsPool,
-        feeTier: token.feeTier
-      }));
+      return supportedTokens.map((token: any) => {
+        console.log("Processing token:", token);
+        return {
+          isoCode: token.isoCode,
+          tokenSymbol: token.tokenSymbol,
+          tokenAddress: token.tokenAddress,
+          totalStaked: token.totalStaked,
+          transactionFee: token.transactionFee,
+          rewardsPool: token.rewardsPool,
+          feeTier: token.feeTier
+        };
+      });
     } catch (error) {
       console.error('Error fetching supported tokens:', error);
       throw error;

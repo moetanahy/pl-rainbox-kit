@@ -29,6 +29,7 @@ const LiquidityPoolsList: React.FC = () => {
       try {
         const stakeUtils = new StakeUtils()
         const pools = await stakeUtils.getSupportedTokens()
+        // console.log("Received pools data:", JSON.stringify(pools, null, 2));
         setLiquidityPools(pools)
         setLoading(false)
       } catch (error) {
@@ -68,36 +69,37 @@ const LiquidityPoolsList: React.FC = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {liquidityPools.map((pool) => (
-            <Tr key={pool.tokenSymbol}>
-              <Td>
-                <Text fontWeight="bold">{pool.tokenSymbol}</Text>
-              </Td>
-              <Td>
-                <AddTokenButton tokenSymbol={pool.tokenSymbol} tokenAddress={pool.tokenAddress} />
-                {/* {pool.tokenSymbol} */}
-                {/* {pool.tokenAddress} */}
-              </Td>
-              <Td>{pool.isoCode}</Td>
-              <Td>{isConnected ? '0.00' : '-'}</Td>
-              <Td>{ethers.formatEther(pool.totalStaked)} {pool.tokenSymbol}</Td>
-              <Td>{pool.transactionFee}%</Td>
-              <Td>{pool.feeTier}</Td>
-              <Td>{ethers.formatEther(pool.rewardsPool)} {pool.tokenSymbol}</Td>
-              <Td>
-                <Flex justifyContent="flex-end">
-                  <Button
-                    backgroundColor="#15263e"
-                    color="white"
-                    size="sm"
-                    _hover={{ backgroundColor: "#1e3a5f" }}
-                  >
-                    Add Liquidity
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
-          ))}
+          {liquidityPools.map((pool) => {
+            console.log("Rendering pool:", pool);
+            return (
+              <Tr key={pool.tokenSymbol}>
+                <Td>
+                  <Text fontWeight="bold">{pool.tokenSymbol}</Text>
+                </Td>
+                <Td>
+                  <AddTokenButton tokenSymbol={pool.tokenSymbol} tokenAddress={pool.tokenAddress} />
+                </Td>
+                <Td>{pool.isoCode}</Td>
+                <Td>{isConnected ? '0.00' : '-'}</Td>
+                <Td>{ethers.formatEther(pool.totalStaked)} {pool.tokenSymbol}</Td>
+                <Td>{pool.transactionFee}%</Td>
+                <Td>{pool.feeTier}</Td>
+                <Td>{ethers.formatEther(pool.rewardsPool)} {pool.tokenSymbol}</Td>
+                <Td>
+                  <Flex justifyContent="flex-end">
+                    <Button
+                      backgroundColor="#15263e"
+                      color="white"
+                      size="sm"
+                      _hover={{ backgroundColor: "#1e3a5f" }}
+                    >
+                      Add Liquidity
+                    </Button>
+                  </Flex>
+                </Td>
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
     </Box>

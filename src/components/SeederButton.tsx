@@ -1,20 +1,52 @@
-import React from 'react';
-import { Button } from '@chakra-ui/react';
-import { isAllowedToSeed } from '../utils/WalletUtils';
+import React, { useCallback } from 'react';
+import { Button, useToast } from '@chakra-ui/react';
+import { isAllowedToSeed, seedTreasury } from '../utils/WalletUtils';
+import { useAccount, useWalletClient } from 'wagmi';
+import { ethers } from 'ethers';
 
-interface SeederButtonProps {
-  connectedAddress: string | null;
-}
+const SeederButton: React.FC = () => {
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
+  const toast = useToast();
 
-const SeederButton: React.FC<SeederButtonProps> = ({ connectedAddress }) => {
-  if (!connectedAddress || !isAllowedToSeed(connectedAddress)) {
+  const handleSeed = useCallback(async () => {
+    if (!walletClient) {
+      toast({
+        title: "Error",
+        description: "No wallet client available",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(walletClient as any);
+      const signer = await provider.getSigner();
+      await seedTreasury(signer);
+      toast({
+        title: "Success",
+        description: "Treasury seeded successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error seeding treasury:', error);
+      toast({
+        title: "Error",
+        description: "Failed to seed treasury",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [walletClient, toast]);
+
+  if (!address || !isAllowedToSeed(address)) {
     return null;
   }
-
-  const handleSeed = () => {
-    // Implement seeding functionality here
-    console.log('Seeding initiated');
-  };
 
   return (
     <Button

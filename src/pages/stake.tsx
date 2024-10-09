@@ -21,7 +21,7 @@ export default function StakePage() {
             </Heading>
             <Spacer />
             {isConnected && address && isAllowedToSeed(address) && (
-              <SeederButton connectedAddress={address} />
+              <SeederButton />
             )}
           </Flex>
           <Text fontSize={["md", "lg"]} color="gray.700">

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers';
 
 const walletAddresses = {
   PL_DAZU_Treasury: '0x28E1CbD9d3a90Dc11492a93ceb87F5bE3DD4FE6a',
@@ -8,8 +9,38 @@ const walletAddresses = {
   PL_EG_LP: '0xCa37fe99BdB92520159c25AAA6a65E43Abb202aF'
 };
 
+const tokenContracts = {
+  USDz: '0x7aA0e1E33ff0214faeB00ab8B5D5FCc2Dd458404',
+  EGPz: '0xC16c81e7c8E96535557C38647743E56B8AD7ed21'
+};
+
 export function isAllowedToSeed(address: string): boolean {
     console.log("address", address)
     console.log("walletAddresses.PL_DAZU_Treasury.toLowerCase()", walletAddresses.PL_DAZU_Treasury.toLowerCase())
     return address.toLowerCase() === walletAddresses.PL_DAZU_Treasury.toLowerCase();
+}
+
+export async function seedTreasury(signer: ethers.Signer): Promise<void> {
+  const signerAddress = await signer.getAddress();
+  
+  if (!isAllowedToSeed(signerAddress)) {
+    throw new Error('Only the PL_DAZU_Treasury address is allowed to seed the treasury');
+  }
+
+  const amount = parseUnits('10000', 2); // Assuming 2 decimals for both tokens
+
+  const mintABI = ['function mint(address to, uint256 amount) external'];
+
+  try {
+    const usdzContract = new ethers.Contract(tokenContracts.USDz, mintABI, signer);
+    await usdzContract.mint(walletAddresses.PL_DAZU_Treasury, amount);
+    console.log('Successfully minted 10000 USDz tokens to PL_DAZU_Treasury');
+
+    const egpzContract = new ethers.Contract(tokenContracts.EGPz, mintABI, signer);
+    await egpzContract.mint(walletAddresses.PL_DAZU_Treasury, amount);
+    console.log('Successfully minted 10000 EGPz tokens to PL_DAZU_Treasury');
+  } catch (error) {
+    console.error('Error seeding treasury:', error);
+    throw error;
+  }
 }

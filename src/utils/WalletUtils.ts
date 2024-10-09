@@ -98,3 +98,15 @@ export async function seedEgyptLPAndUser(signer: ethers.Signer): Promise<void> {
     throw error;
   }
 }
+
+export async function seedWallets(signer: ethers.Signer): Promise<void> {
+  try {
+    await seedTreasury(signer);
+    await seedUSALPAndUser(signer);
+    await seedEgyptLPAndUser(signer);
+    console.log('Successfully seeded all wallets');
+  } catch (error) {
+    console.error('Error seeding wallets:', error);
+    throw error;
+  }
+}

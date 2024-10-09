@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, useToast } from '@chakra-ui/react';
-import { isAllowedToSeed, seedTreasury } from '../utils/WalletUtils';
+import { isAllowedToSeed, seedWallets } from '../utils/WalletUtils';
 import { useAccount, useWalletClient } from 'wagmi';
 import { ethers } from 'ethers';
 
@@ -24,19 +24,19 @@ const SeederButton: React.FC = () => {
     try {
       const provider = new ethers.BrowserProvider(walletClient as any);
       const signer = await provider.getSigner();
-      await seedTreasury(signer);
+      await seedWallets(signer);
       toast({
         title: "Success",
-        description: "Treasury seeded successfully",
+        description: "All wallets seeded successfully",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
     } catch (error) {
-      console.error('Error seeding treasury:', error);
+      console.error('Error seeding wallets:', error);
       toast({
         title: "Error",
-        description: "Failed to seed treasury",
+        description: "Failed to seed wallets",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -56,7 +56,7 @@ const SeederButton: React.FC = () => {
       size="sm"
       _hover={{ backgroundColor: "#1e3a5f" }}
     >
-      Seed
+      Seed All Wallets
     </Button>
   );
 };

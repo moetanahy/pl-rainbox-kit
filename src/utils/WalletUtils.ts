@@ -44,3 +44,57 @@ export async function seedTreasury(signer: ethers.Signer): Promise<void> {
     throw error;
   }
 }
+
+export async function seedUSALPAndUser(signer: ethers.Signer): Promise<void> {
+  const signerAddress = await signer.getAddress();
+  
+  if (!isAllowedToSeed(signerAddress)) {
+    throw new Error('Only the PL_DAZU_Treasury address is allowed to seed wallets');
+  }
+
+  const amount = parseUnits('10000', 18); // Assuming 18 decimals for USDz token
+  const mintABI = ['function mint(address to, uint256 amount) external'];
+
+  try {
+    const usdzContract = new ethers.Contract(tokenContracts.USDz, mintABI, signer);
+
+    // Mint 10000 USDz tokens for PL_USA_LP
+    await usdzContract.mint(walletAddresses.PL_USA_LP, amount);
+    console.log('Successfully minted 10000 USDz tokens to PL_USA_LP');
+
+    // Mint 10000 USDz tokens for PL_USA_User
+    await usdzContract.mint(walletAddresses.PL_USA_User, amount);
+    console.log('Successfully minted 10000 USDz tokens to PL_USA_User');
+
+  } catch (error) {
+    console.error('Error seeding USA LP and User wallets:', error);
+    throw error;
+  }
+}
+
+export async function seedEgyptLPAndUser(signer: ethers.Signer): Promise<void> {
+  const signerAddress = await signer.getAddress();
+  
+  if (!isAllowedToSeed(signerAddress)) {
+    throw new Error('Only the PL_DAZU_Treasury address is allowed to seed wallets');
+  }
+
+  const amount = parseUnits('10000', 18); // Assuming 18 decimals for EGPz token
+  const mintABI = ['function mint(address to, uint256 amount) external'];
+
+  try {
+    const egpzContract = new ethers.Contract(tokenContracts.EGPz, mintABI, signer);
+
+    // Mint 10000 EGPz tokens for PL_EG_LP
+    await egpzContract.mint(walletAddresses.PL_EG_LP, amount);
+    console.log('Successfully minted 10000 EGPz tokens to PL_EG_LP');
+
+    // Mint 10000 EGPz tokens for PL_EG_User
+    await egpzContract.mint(walletAddresses.PL_EG_User, amount);
+    console.log('Successfully minted 10000 EGPz tokens to PL_EG_User');
+
+  } catch (error) {
+    console.error('Error seeding Egypt LP and User wallets:', error);
+    throw error;
+  }
+}

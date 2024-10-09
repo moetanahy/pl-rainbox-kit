@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Box,
   Select,
@@ -32,6 +32,7 @@ const SendComponent = () => {
   const { address } = useAccount();
   const [myCountry, setMyCountry] = useState('');
   const [myWalletName, setMyWalletName] = useState('');
+  const [destinationCountry, setDestinationCountry] = useState('');
 
   const estimatedUtility = new EstimatedUtility();
   const toast = useToast();
@@ -97,6 +98,23 @@ const SendComponent = () => {
     }
   }, [address]);
 
+  useEffect(() => {
+    if (selectedFriend) {
+      const friendWalletTitle = getWalletTitle(selectedFriend);
+      const country = getCountry(friendWalletTitle);
+      setDestinationCountry(country);
+    } else {
+      setDestinationCountry('');
+    }
+  }, [selectedFriend]);
+
+  const filteredWalletOptions = useMemo(() => {
+    return Object.entries(walletAddresses).filter(([title, address]) => {
+      const country = getCountry(title);
+      return (country === 'USA' || country === 'Egypt') && title !== myWalletName;
+    });
+  }, [myWalletName]);
+
   const handleSend = async () => {
     if (!selectedFriend || !amount) {
       toast({
@@ -142,7 +160,8 @@ const SendComponent = () => {
         <CardBody>
           <Box margin="auto" mt={8} p={6} borderWidth={1} borderRadius="lg">
             <VStack spacing={6} align="stretch">
-              <Heading size="lg" textAlign="center" color="gray.800" mb={2}>Send Money</Heading>
+              {/* Remove the following line */}
+              {/* <Heading size="lg" textAlign="center" color="gray.800" mb={2}>Send Money</Heading> */}
               
               <HStack justify="space-between">
                 <Text fontSize="md" fontWeight="bold" color="gray.700">My Country:</Text>
@@ -154,54 +173,31 @@ const SendComponent = () => {
                 <Text fontSize="md" color="gray.800">{myWalletName}</Text>
               </HStack>
 
-              <HStack spacing={4} align="center">
-                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Sending:</Text>
-                <Select 
-                  value={fromCurrency} 
-                  onChange={(e) => setFromCurrency(e.target.value as SupportedCurrencies)} 
-                  color="gray.800"
-                  borderColor="gray.300"
-                  _hover={{ borderColor: "gray.400" }}
-                  width="25%"
-                >
-                  {Object.values(SupportedCurrencies).map((currency) => (
-                    <option key={currency} value={currency}>{currency}</option>
-                  ))}
-                </Select>
-
-                <InputGroup width="55%">
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.500"
-                    fontSize="1.2em"
-                    children={getCurrencySymbol(fromCurrency)}
-                  />
-                  <Input
-                    placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    type="number"
+              <HStack spacing={4} align="center" justify="space-between">
+                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Sending to:</Text>
+                <Box width="70%">
+                  <Select
+                    placeholder="Select friend"
+                    value={selectedFriend}
+                    onChange={(e) => setSelectedFriend(e.target.value)}
                     color="gray.800"
                     borderColor="gray.300"
                     _hover={{ borderColor: "gray.400" }}
-                    _placeholder={{ color: "gray.500" }}
-                    pl="2rem"
-                  />
-                </InputGroup>
+                    width="100%"
+                  >
+                    {filteredWalletOptions.map(([title, address]) => (
+                      <option key={address} value={address}>{title}</option>
+                    ))}
+                  </Select>
+                </Box>
               </HStack>
 
-              <Select
-                placeholder="Select friend"
-                value={selectedFriend}
-                onChange={(e) => setSelectedFriend(e.target.value)}
-                color="gray.800"
-                borderColor="gray.300"
-                _hover={{ borderColor: "gray.400" }}
-              >
-                {Object.entries(walletAddresses).map(([title, address]) => (
-                  <option key={address} value={address}>{title}</option>
-                ))}
-              </Select>
+              <HStack spacing={4} align="center" justify="space-between">
+                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Destination Country:</Text>
+                <Box width="70%" textAlign="right">
+                  <Text fontSize="md" color="gray.800">{destinationCountry}</Text>
+                </Box>
+              </HStack>
 
               <VStack align="stretch" spacing={2} mt={2}>
                 <HStack justify="space-between">

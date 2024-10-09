@@ -11,19 +11,18 @@ import {
   Text,
   Flex,
   Spinner,
-  Heading,
-  IconButton,
 } from '@chakra-ui/react'
 import { StakeUtils, Currency } from '../utils/StakeUtils'
 import { ethers } from 'ethers'
-import SeederButton from './SeederButton'
+// import SeederButton from './SeederButton'
+import AddTokenButton from './AddTokenButton'
 import { AddIcon } from '@chakra-ui/icons'
+import { useAccount } from 'wagmi'
 
 const LiquidityPoolsList: React.FC = () => {
   const [liquidityPools, setLiquidityPools] = useState<Currency[]>([])
   const [loading, setLoading] = useState(true)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-//   const [connectedAddress, setConnectedAddress] = useState<string | null>(null)
+  const { isConnected } = useAccount()
 
   useEffect(() => {
     const fetchLiquidityPools = async () => {
@@ -39,16 +38,6 @@ const LiquidityPoolsList: React.FC = () => {
     }
 
     fetchLiquidityPools()
-
-    // Simulating wallet connection (replace with actual wallet connection logic)
-    const simulateWalletConnection = async () => {
-      // Replace this with actual wallet connection logic
-      const address = '0x28E1CbD9d3a90Dc11492a93ceb87F5bE3DD4FE6a' // PL_DAZU_Treasury address for testing
-    //   setConnectedAddress(address)
-      setIsLoggedIn(true)
-    }
-
-    simulateWalletConnection()
   }, [])
 
   if (loading) {
@@ -62,9 +51,7 @@ const LiquidityPoolsList: React.FC = () => {
   return (
     <Box overflowX="auto" width="100%">
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
-        {/* <SeederButton connectedAddress={connectedAddress} /> */}
-        {/* <Heading as="h2" size="lg">Stake and earn rewards</Heading> */}
-        
+        {/* <SeederButton /> */}
       </Flex>
       <Table variant="simple">
         <Thead>
@@ -87,17 +74,12 @@ const LiquidityPoolsList: React.FC = () => {
                 <Text fontWeight="bold">{pool.tokenSymbol}</Text>
               </Td>
               <Td>
-                <IconButton
-                  aria-label="Add token"
-                  icon={<AddIcon />}
-                  size="xs"
-                  backgroundColor="#15263e"
-                  color="white"
-                  _hover={{ backgroundColor: "#1e3a5f" }}
-                />
+                <AddTokenButton tokenSymbol={pool.tokenSymbol} tokenAddress={pool.tokenAddress} />
+                {/* {pool.tokenSymbol} */}
+                {/* {pool.tokenAddress} */}
               </Td>
               <Td>{pool.isoCode}</Td>
-              <Td>{isLoggedIn ? '0.00' : '-'}</Td>
+              <Td>{isConnected ? '0.00' : '-'}</Td>
               <Td>{ethers.formatEther(pool.totalStaked)} {pool.tokenSymbol}</Td>
               <Td>{pool.transactionFee}%</Td>
               <Td>{pool.feeTier}</Td>

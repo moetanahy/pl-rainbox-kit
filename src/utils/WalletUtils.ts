@@ -10,8 +10,8 @@ const walletAddresses = {
 };
 
 const tokenContracts = {
-  USDz: '0x7aA0e1E33ff0214faeB00ab8B5D5FCc2Dd458404',
-  EGPz: '0xC16c81e7c8E96535557C38647743E56B8AD7ed21'
+  USDz: '0x7087e6bC6D9819eeE73286Dad0701f84C4bfe3ad',
+  EGPz: '0x22E785edc39CC5D2fa79F82a51a9898232BEDe98'
 };
 
 export function isAllowedToSeed(address: string): boolean {

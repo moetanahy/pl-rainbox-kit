@@ -56,7 +56,7 @@ const SeederButton: React.FC = () => {
       size="sm"
       _hover={{ backgroundColor: "#1e3a5f" }}
     >
-      Seed Pools
+      Seed
     </Button>
   );
 };

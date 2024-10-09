@@ -17,7 +17,7 @@ export default function StakePage() {
         <VStack align="stretch" spacing={6} py={8}>
           <Flex alignItems="center">
             <Heading fontSize={["2xl", "3xl", "4xl"]} fontWeight="bold" lineHeight="shorter">
-              Stake and Earn Rewards
+              Stake stablecoins and earn interest
             </Heading>
             <Spacer />
             {isConnected && address && isAllowedToSeed(address) && (

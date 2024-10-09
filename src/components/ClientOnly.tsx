@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react'
 
 export default function ClientOnly({ children, ...delegated }: { children: ReactNode; [key: string]: any }) {
   const [hasMounted, setHasMounted] = useState(false)

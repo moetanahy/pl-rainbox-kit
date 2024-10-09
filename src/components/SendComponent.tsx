@@ -7,8 +7,6 @@ import {
   Text,
   VStack,
   HStack,
-  Heading,
-  Divider,
   Card,
   CardBody,
   InputGroup,
@@ -160,9 +158,6 @@ const SendComponent = () => {
         <CardBody>
           <Box margin="auto" mt={8} p={6} borderWidth={1} borderRadius="lg">
             <VStack spacing={6} align="stretch">
-              {/* Remove the following line */}
-              {/* <Heading size="lg" textAlign="center" color="gray.800" mb={2}>Send Money</Heading> */}
-              
               <HStack justify="space-between">
                 <Text fontSize="md" fontWeight="bold" color="gray.700">My Country:</Text>
                 <Text fontSize="md" color="gray.800">{myCountry}</Text>
@@ -171,6 +166,42 @@ const SendComponent = () => {
               <HStack justify="space-between">
                 <Text fontSize="md" fontWeight="bold" color="gray.700">Name:</Text>
                 <Text fontSize="md" color="gray.800">{myWalletName}</Text>
+              </HStack>
+
+              <HStack spacing={4} align="center" justify="space-between">
+                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Sending:</Text>
+                <Select 
+                  value={fromCurrency} 
+                  onChange={(e) => setFromCurrency(e.target.value as SupportedCurrencies)} 
+                  color="gray.800"
+                  borderColor="gray.300"
+                  _hover={{ borderColor: "gray.400" }}
+                  width="25%"
+                >
+                  {Object.values(SupportedCurrencies).map((currency) => (
+                    <option key={currency} value={currency}>{currency}</option>
+                  ))}
+                </Select>
+
+                <InputGroup width="55%">
+                  <InputLeftElement
+                    pointerEvents="none"
+                    color="gray.500"
+                    fontSize="1.2em"
+                    children={getCurrencySymbol(fromCurrency)}
+                  />
+                  <Input
+                    placeholder="Amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    type="number"
+                    color="gray.800"
+                    borderColor="gray.300"
+                    _hover={{ borderColor: "gray.400" }}
+                    _placeholder={{ color: "gray.500" }}
+                    pl="2rem"
+                  />
+                </InputGroup>
               </HStack>
 
               <HStack spacing={4} align="center" justify="space-between">
@@ -193,8 +224,8 @@ const SendComponent = () => {
               </HStack>
 
               <HStack spacing={4} align="center" justify="space-between">
-                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Destination Country:</Text>
-                <Box width="70%" textAlign="right">
+                <Text fontSize="md" fontWeight="bold" color="gray.700" width="30%">Destination Country:</Text>
+                <Box width="60%" textAlign="right">
                   <Text fontSize="md" color="gray.800">{destinationCountry}</Text>
                 </Box>
               </HStack>

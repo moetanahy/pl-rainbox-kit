@@ -77,26 +77,34 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Liquidity for {tokenSymbol}</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent backgroundColor="#f5f5f5">
+          <ModalHeader color="black">Add Liquidity for {tokenSymbol}</ModalHeader>
+          <ModalCloseButton color="black" />
           <ModalBody>
             <VStack spacing={4}>
-              <Text>Balance: {balance.formatted} {tokenSymbol}</Text>
+              <Text color="black">Balance: {balance?.formatted} {tokenSymbol}</Text>
               <Input
                 placeholder="Enter amount to stake"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 type="number"
+                color="black"
+                borderColor="gray.300"
               />
             </VStack>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleStake}>
+            <Button
+              backgroundColor="#15263e"
+              color="white"
+              _hover={{ backgroundColor: "#1e3a5f" }}
+              mr={3}
+              onClick={handleStake}
+            >
               Stake
             </Button>
-            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button variant="ghost" onClick={onClose} color="black">Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

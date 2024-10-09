@@ -19,7 +19,7 @@ export class StakeUtils {
     this.provider = new ethers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org');
     
     // Contract address
-    const contractAddress = '0x1C22A7a205A2377211158111656fc6E3ffe0A612';
+    const contractAddress = '0x826999eE44Ad8B5a94B4A04315C316D61c009C8f';
     
     // Updated ABI with the correct function signature
     const abi = [

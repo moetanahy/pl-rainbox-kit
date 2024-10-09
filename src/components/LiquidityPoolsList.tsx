@@ -12,10 +12,12 @@ import {
   Flex,
   Spinner,
   Heading,
+  IconButton,
 } from '@chakra-ui/react'
 import { StakeUtils, Currency } from '../utils/StakeUtils'
 import { ethers } from 'ethers'
 import SeederButton from './SeederButton'
+import { AddIcon } from '@chakra-ui/icons'
 
 const LiquidityPoolsList: React.FC = () => {
   const [liquidityPools, setLiquidityPools] = useState<Currency[]>([])
@@ -68,6 +70,7 @@ const LiquidityPoolsList: React.FC = () => {
         <Thead>
           <Tr>
             <Th>Token Name</Th>
+            <Th><AddIcon boxSize={3} /></Th>
             <Th>ISO Code</Th>
             <Th>Your Liquidity</Th>
             <Th>TVL (Total Value Locked)</Th>
@@ -82,6 +85,16 @@ const LiquidityPoolsList: React.FC = () => {
             <Tr key={pool.tokenSymbol}>
               <Td>
                 <Text fontWeight="bold">{pool.tokenSymbol}</Text>
+              </Td>
+              <Td>
+                <IconButton
+                  aria-label="Add token"
+                  icon={<AddIcon />}
+                  size="xs"
+                  backgroundColor="#15263e"
+                  color="white"
+                  _hover={{ backgroundColor: "#1e3a5f" }}
+                />
               </Td>
               <Td>{pool.isoCode}</Td>
               <Td>{isLoggedIn ? '0.00' : '-'}</Td>

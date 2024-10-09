@@ -8,7 +8,10 @@ const nextConfig = {
     });
 
     return config;
-  }
+  },
+  eslint: {
+    quiet: true,
+  },
 };
 
 module.exports = nextConfig;

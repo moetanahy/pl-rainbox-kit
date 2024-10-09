@@ -16,8 +16,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { EstimatedUtility, SupportedCurrencies } from '../utils/EstimatedUtility';
-import { getWalletTitle, walletAddresses } from '../utils/WalletUtils';
+import { getWalletTitle, walletAddresses, getCountry } from '../utils/WalletUtils';
 import { sendFunds } from '../utils/SendUtils';
+import { useAccount } from 'wagmi';
 
 const SendComponent = () => {
   const [fromCurrency, setFromCurrency] = useState<SupportedCurrencies>(SupportedCurrencies.USD);
@@ -28,6 +29,9 @@ const SendComponent = () => {
   const [estimatedReceived, setEstimatedReceived] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { address } = useAccount();
+  const [myCountry, setMyCountry] = useState('');
+  const [myWalletName, setMyWalletName] = useState('');
 
   const estimatedUtility = new EstimatedUtility();
   const toast = useToast();
@@ -84,6 +88,15 @@ const SendComponent = () => {
     }
   }, [amount, fromCurrency, handleEstimate]);
 
+  useEffect(() => {
+    if (address) {
+      const walletTitle = getWalletTitle(address);
+      setMyWalletName(walletTitle);
+      const country = getCountry(walletTitle);
+      setMyCountry(country);
+    }
+  }, [address]);
+
   const handleSend = async () => {
     if (!selectedFriend || !amount) {
       toast({
@@ -131,37 +144,51 @@ const SendComponent = () => {
             <VStack spacing={6} align="stretch">
               <Heading size="lg" textAlign="center" color="gray.800" mb={2}>Send Money</Heading>
               
-              <Select 
-                value={fromCurrency} 
-                onChange={(e) => setFromCurrency(e.target.value as SupportedCurrencies)} 
-                color="gray.800"
-                borderColor="gray.300"
-                _hover={{ borderColor: "gray.400" }}
-              >
-                {Object.values(SupportedCurrencies).map((currency) => (
-                  <option key={currency} value={currency}>{currency}</option>
-                ))}
-              </Select>
+              <HStack justify="space-between">
+                <Text fontSize="md" fontWeight="bold" color="gray.700">My Country:</Text>
+                <Text fontSize="md" color="gray.800">{myCountry}</Text>
+              </HStack>
 
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  color="gray.500"
-                  fontSize="1.2em"
-                  children={getCurrencySymbol(fromCurrency)}
-                />
-                <Input
-                  placeholder="Amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  type="number"
+              <HStack justify="space-between">
+                <Text fontSize="md" fontWeight="bold" color="gray.700">Name:</Text>
+                <Text fontSize="md" color="gray.800">{myWalletName}</Text>
+              </HStack>
+
+              <HStack spacing={4} align="center">
+                <Text fontSize="md" fontWeight="bold" color="gray.700" width="20%">Sending:</Text>
+                <Select 
+                  value={fromCurrency} 
+                  onChange={(e) => setFromCurrency(e.target.value as SupportedCurrencies)} 
                   color="gray.800"
                   borderColor="gray.300"
                   _hover={{ borderColor: "gray.400" }}
-                  _placeholder={{ color: "gray.500" }}
-                  pl="2rem"
-                />
-              </InputGroup>
+                  width="25%"
+                >
+                  {Object.values(SupportedCurrencies).map((currency) => (
+                    <option key={currency} value={currency}>{currency}</option>
+                  ))}
+                </Select>
+
+                <InputGroup width="55%">
+                  <InputLeftElement
+                    pointerEvents="none"
+                    color="gray.500"
+                    fontSize="1.2em"
+                    children={getCurrencySymbol(fromCurrency)}
+                  />
+                  <Input
+                    placeholder="Amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    type="number"
+                    color="gray.800"
+                    borderColor="gray.300"
+                    _hover={{ borderColor: "gray.400" }}
+                    _placeholder={{ color: "gray.500" }}
+                    pl="2rem"
+                  />
+                </InputGroup>
+              </HStack>
 
               <Select
                 placeholder="Select friend"

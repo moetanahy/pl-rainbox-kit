@@ -120,3 +120,12 @@ export function getWalletTitle(address: string): string {
   }
   return 'Unknown Wallet';
 }
+
+export function getCountry(walletName: string): string {
+  if (walletName.includes('USA')) {
+    return 'USA';
+  } else if (walletName.includes('EG')) {
+    return 'Egypt';
+  }
+  return 'ALL';
+}

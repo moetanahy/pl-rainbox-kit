@@ -61,7 +61,7 @@ const LiquidityPoolsList: React.FC = () => {
             <Th><AddIcon boxSize={3} /></Th>
             <Th>ISO Code</Th>
             <Th>Your Liquidity</Th>
-            <Th>TVL (Total Value Locked)</Th>
+            <Th>TVL</Th>
             <Th>Transaction Fee</Th>
             <Th>Fee Tier</Th>
             <Th>Rewards Pool</Th>

@@ -13,6 +13,7 @@ import {
   VStack,
   useDisclosure,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { useAccount, useBalance } from 'wagmi';
 import { StakeUtils } from '../utils/StakeUtils';
@@ -26,6 +27,7 @@ interface AddLiquidityButtonProps {
 const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, tokenAddress }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState('');
+  const [isStaking, setIsStaking] = useState(false);
   const { address } = useAccount();
   const { data: balance } = useBalance({
     address: address as `0x${string}`,
@@ -35,6 +37,9 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
 
   const handleStake = async () => {
     if (!address || !amount) return;
+
+    setIsStaking(true);
+    onClose(); // Close the modal immediately
 
     try {
       const stakeUtils = new StakeUtils();
@@ -46,7 +51,6 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
         duration: 5000,
         isClosable: true,
       });
-      onClose();
     } catch (error) {
       console.error('Staking error:', error);
       toast({
@@ -56,6 +60,9 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setIsStaking(false);
+      setAmount(''); // Reset the amount after staking
     }
   };
 
@@ -71,8 +78,10 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
         size="sm"
         _hover={{ backgroundColor: "#1e3a5f" }}
         onClick={onOpen}
+        isLoading={isStaking}
+        loadingText="Staking..."
       >
-        Add Liquidity
+        {isStaking ? <Spinner size="sm" /> : 'Add Liquidity'}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -101,6 +110,7 @@ const AddLiquidityButton: React.FC<AddLiquidityButtonProps> = ({ tokenSymbol, to
               _hover={{ backgroundColor: "#1e3a5f" }}
               mr={3}
               onClick={handleStake}
+              isLoading={isStaking}
             >
               Stake
             </Button>

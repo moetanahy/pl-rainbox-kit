@@ -18,17 +18,16 @@ export default function StakePage() {
       <Container maxW="container.xl" px={[4, 6, 8]}>
         <VStack align="stretch" spacing={6} py={8}>
           <Flex alignItems="flex-start">
-            <Box flex="1">
-              <Heading fontSize={["2xl", "3xl", "4xl"]} fontWeight="bold" lineHeight="shorter">
+            <Box flex="1" mr={8} maxWidth="70%">
+              <Heading fontSize={["2xl", "3xl", "4xl"]} fontWeight="bold" lineHeight="shorter" whiteSpace="nowrap">
                 Stake stablecoins and earn interest
               </Heading>
               <Text fontSize={["md", "lg"]} color="gray.700" mt={2}>
                 Provide liquidity to our pools and earn attractive APRs
               </Text>
             </Box>
-            <Spacer />
             <ClientOnly>
-              <Box>
+              <Box flexShrink={0}>
                 <BalancesWidget />
                 {isConnected && address && isAllowedToSeed(address) && (
                   <Box mt={4}>

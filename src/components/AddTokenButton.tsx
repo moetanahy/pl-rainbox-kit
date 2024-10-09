@@ -22,7 +22,7 @@ const AddTokenButton: React.FC<AddTokenButtonProps> = ({ tokenSymbol, tokenAddre
             options: {
               address: tokenAddress,
               symbol: tokenSymbol,
-              decimals: 2, // Assuming 18 decimals, adjust if different
+              decimals: 18, // Assuming 18 decimals, adjust if different
               image: '', // Add token image URL if available
             },
           },

@@ -27,7 +27,7 @@ export async function seedTreasury(signer: ethers.Signer): Promise<void> {
     throw new Error('Only the PL_DAZU_Treasury address is allowed to seed the treasury');
   }
 
-  const amount = parseUnits('10000', 2); // Assuming 2 decimals for both tokens
+  const amount = parseUnits('10000', 18); // Assuming 2 decimals for both tokens
 
   const mintABI = ['function mint(address to, uint256 amount) external'];
 

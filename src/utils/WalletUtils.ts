@@ -9,5 +9,7 @@ const walletAddresses = {
 };
 
 export function isAllowedToSeed(address: string): boolean {
-  return address.toLowerCase() === walletAddresses.PL_DAZU_Treasury.toLowerCase();
+    console.log("address", address)
+    console.log("walletAddresses.PL_DAZU_Treasury.toLowerCase()", walletAddresses.PL_DAZU_Treasury.toLowerCase())
+    return address.toLowerCase() === walletAddresses.PL_DAZU_Treasury.toLowerCase();
 }
